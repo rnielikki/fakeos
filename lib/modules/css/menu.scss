@@ -1,0 +1,57 @@
+.menu{
+    &-secondary{
+        @extend %win;
+        position: absolute;
+        @extend %noselect;
+        left:100%;
+        top:0;
+        border:2px outset $winbg;
+        z-index:2;
+        min-width:7.5em;
+        &-vertical{
+            left:0;
+            top:100%;
+        }
+    }
+    &-primary{
+        width: fit-content;
+    }
+    &-disabled{
+        color:#666;
+        text-shadow:1px 1px #eee;
+    }
+    &-selectable, &-primary{
+        padding:.5em;
+        white-space:nowrap;
+        &:hover{
+            @extend %select;
+        }
+    }
+    &-disabled{
+        padding:.5em;
+        white-space:nowrap;
+    }
+    &-wrapper{
+        position: relative;
+        &:hover > .menu-secondary{
+            display:block;
+        }
+        &-primary{
+            position: relative;
+        }
+        > .menu-selectable::after{
+            content:"\25ba";
+            font-size:80%;
+            margin-left:1.5em;
+        }
+        .menu-secondary{
+            display:none;
+        }
+    }
+    /* right-click menu */
+    &-right{
+        display: block;
+        position: absolute;
+        z-index: 32765;
+    }
+}

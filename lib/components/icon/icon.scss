@@ -1,0 +1,34 @@
+.icon{
+    @extend %noselect;
+    text-align: center;
+    position:absolute;
+    width:64px;
+    height:calc( 64px + 1.55em );
+    &-img{
+        width:48px;
+        height:48px;
+        -moz-user-drag:none;
+        -webkit-user-drag:none;
+    }
+    &-label{
+        font-size:90%;
+        color:#fff;
+        text-shadow:1px 0 0 #000, -1px 0 0 #000, 0 1px #000, 0 -1px #000;
+        word-wrap:break-word;
+        /**/
+        overflow:hidden;
+        height:2em;
+        line-height: 1em;
+        margin-top:0.25em;
+    }
+    &-selected{
+        .icon-img{
+            filter: sepia(80%) hue-rotate(180deg) brightness(0.6);
+        }
+        .icon-label{
+            background-color:rgba(45,45,105,0.5);
+            overflow:visible;
+            height:auto;
+        }
+    }
+}

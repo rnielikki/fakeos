@@ -1,0 +1,115 @@
+.window{
+    position:absolute;
+    width:640px;
+    height:480px;
+    min-width:300px;
+    min-height:300px;
+    border:3px outset $winbg;
+    display: flex;
+    flex-direction: column;
+    &:focus{ outline: none; }
+    &-title{
+        @extend %noselect;
+        background:#7a7a7a linear-gradient(90deg,#6f6f6f,#919191);
+        height: auto;
+        justify-content: space-between;
+        align-items: center;
+        padding:0.35em 0.4em 0.35em 0.8em;
+        > span{
+            color:$titletxt;
+        }
+        .right{
+            float:right;
+            div{
+                display:inline-flex;
+                margin-left:5px;
+                width:1.2em;
+                line-height: 1em;
+                box-sizing: border-box;
+            }
+        }
+    }
+    &-active .window-title{
+        background:#003099 linear-gradient(90deg,#0f2e40,#4c8dde);
+    }
+    &-menu{
+        @extend %noselect;
+        @extend %win;
+        display: flex;
+        flex-direction: row;
+    }
+    &-submenu{
+        left:0;
+        top:100%;
+        float: left;
+        position: absolute;
+        top: 100%;
+    }
+    &-content{
+        /*placeholder*/
+        background-color:#fff;
+        color:#000;
+        /*placeholder ends*/
+        flex-grow:1;
+        overflow:auto;
+    }
+    &-resize{
+        &-n, &-s{
+            width:100%;
+            height:6px;
+            left:0;
+            &:hover{
+                cursor:ns-resize;
+            }
+        }
+        &-e, &-w{
+            width:6px;
+            height:100%;
+            top:0;
+            &:hover{
+                cursor:ew-resize;
+            }
+        }
+        &-ne, &-nw, &-se, &-sw{
+            width:6px;
+            height:6px;
+        }
+        &-ne, &-sw{
+            &:hover{ cursor:nesw-resize; }
+            
+        }
+        &-nw, &-se{
+            &:hover{ cursor:nwse-resize; }
+        }
+        &-n, &-ne, &-nw{ top:-3px; }
+        &-s, &-se, &-sw{ bottom:-3px; }
+        &-e, &-ne, &-se{ right:-3px; }
+        &-w, &-nw, &-sw{ left:-3px; }
+        position:absolute;
+    }
+    &-dialog{
+        text-align: center;
+        cursor:default;
+        min-width:250px;
+        min-height:100px;
+        @extend %noselect;
+        &-buttons{
+            display: flex;
+            justify-content: center;
+            .button{
+                padding: 0.25rem 0.4rem;
+                min-width: 4.5rem;
+            }
+        }
+        &-bg{
+            background-color:$winbg;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: center;
+        }
+        &-message{
+            margin-top:0;
+        }
+    }
+}
