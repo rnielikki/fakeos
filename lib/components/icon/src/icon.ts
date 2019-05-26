@@ -1,11 +1,14 @@
 import { Copyable } from "modules/copyable";
-import { WindowObject } from "../../../index";
-import { docHeight } from "../../../modules/position";
+import { WindowObject } from "components/window/src/window";
+import { RightMenu } from "modules/rightclick"
+import { docHeight } from "modules/position";
+import * as iconMenu from "./menu_icon";
 
 
 export class IconController {
     private _view: DocumentFragment = document.createDocumentFragment();
     private _selected: IconObject | null = null;
+    private _lastselect: IconObject | null = null;
     private static _this: IconController;
     private static _iconMargin: number = 105;
     public static iconCount: number = 0;
@@ -25,12 +28,11 @@ export class IconController {
         if (!IconController._this) IconController._this = new IconController();
         return this._this;
     }
-    /*public Add(){
-    }*/
     public SelectIcon = (target: IconObject) => {
         if (this._selected !== null) this.UnSelectIcon();
         target.target.classList.add("icon-selected");
         this._selected = target;
+        this._lastselect = target;
     }
     public UnSelectIcon = () => {
         if (this._selected === null) return;
@@ -39,7 +41,8 @@ export class IconController {
         this._selected = null;
     }
     public get view(): DocumentFragment { return this._view; }
-    public selected() { return this._selected; }
+    public get selected() { return this._selected; }
+    public get lastselect() { return this._lastselect; }
     public static get iconMargin(): number { return this._iconMargin; }
     public static get iconPerCol(): number { return this._iconPerCol; }
 }
@@ -50,12 +53,13 @@ export class IconObject extends Copyable {
         super(IconController.Get().view);
         this.target.addEventListener("mousedown", this.Register, false);
         this.labelObject = this.target.getElementsByClassName("icon-label")[0] as HTMLElement;
-        this.labelObject.innerText = iconLabel || iconName;
+        this.setName(iconLabel || iconName);
         iconPicName ? this.setIcon(iconPicName, true) : this.setIcon(iconName);
         Action = !Action ? () => new WindowObject(iconName) : Action;
         this.target.addEventListener("dblclick", Action);
         this.target.addEventListener("mousedown", this.Select);
         this.SetPosition(Math.floor(IconController.iconCount / IconController.iconPerCol) * IconController.iconMargin, (IconController.iconCount % IconController.iconPerCol) * IconController.iconMargin);
+        new RightMenu(this.target,iconMenu.default);
         IconController.iconCount++;
     }
     setIcon(iconName: string, custom: boolean = false) {
@@ -90,9 +94,26 @@ export class IconObject extends Copyable {
             this._icon = img;
         }
     }
-    private Select = (e: Event) => {
+    public EditMode(){
+        this.labelObject.contentEditable="true";
+        this.Select();
+        this.labelObject.focus();
+        const before=this.labelObject.innerText;
+        this.labelObject.addEventListener("focusout", ()=>{
+            this.setName(this.labelObject.innerText || before);
+            this.labelObject.contentEditable="false";
+        } ,{once:true});
+    }
+    public setName(text:string){
+        this.labelObject.innerText=text;
+    }
+    public Remove=()=>{
+        this.target.remove();
+        IconController.iconCount--;
+    }
+    private Select = (e?: Event) => {
         IconController.Get().SelectIcon(this);
-        e.stopPropagation();
+        if(e) e.stopPropagation();
     }
     public get icon() { return this._icon; }
 }

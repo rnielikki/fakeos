@@ -15,11 +15,15 @@
         color:#fff;
         text-shadow:1px 0 0 #000, -1px 0 0 #000, 0 1px #000, 0 -1px #000;
         word-wrap:break-word;
-        /**/
         overflow:hidden;
         height:2em;
         line-height: 1em;
         margin-top:0.25em;
+        &[contenteditable="true"] {
+            background-color: #fff !important;
+            text-shadow: none;
+            color: #000;
+        }
     }
     &-selected{
         .icon-img{
