@@ -9,9 +9,9 @@ export default {
                 {
                     name: "Change Text",
                     action: function (e: Event) {
-                        const innerP = WindowObject.Now()!.contentPage.getElementsByTagName("p")[0] as HTMLElement;
+                        const innerP = WindowObject.Now()!.contentPage.shadowRoot!.childNodes[1] as HTMLElement;
                         if (innerP) {
-                            innerP.innerText = "bye woooorld";
+                            innerP.innerHTML="lol";
                         }
                         else {
                             new DialogObject("I say", "Where did the index page go? oops!", [["OK", WIN.Close]]);

@@ -52,17 +52,25 @@ export class WindowObject extends WinObject {
         //safer way than innerHTML
         const parser = new DOMParser();
         const contentPage: HTMLElement = this.target.getElementsByClassName("window-content")[0] as HTMLElement;
+        const shadow = contentPage.shadowRoot || contentPage.attachShadow({mode:"open"});
         try {
-            const parsed = parser.parseFromString(require(`__src__/window/${this.winName}/${filename}.html`), "text/html").body.children;
-            const frag = document.createDocumentFragment();
-            contentPage.innerText = "";
-            for (let i = 0; i < parsed.length; i++) {
-                frag.appendChild(parsed[i]);
+            const parsedAll = parser.parseFromString(require(`__src__/window/${this.winName}/${filename}.html`), "text/html");
+            const parsedHead = parsedAll.head.querySelector("style");
+            const parsed = parsedAll.body.children;
+            while(shadow.firstChild){
+                shadow.removeChild(shadow.firstChild);
             }
-            contentPage.appendChild(frag);
+            contentPage.appendChild(shadow);
+            if(parsedHead)
+                shadow.appendChild(parsedHead);
+            for (let i = 0; i < parsed.length; i++) {
+                shadow.appendChild(parsed[i]);
+            }
         }
-        catch{
-            contentPage.innerText = "ooopps failed to load!";
+        catch(err){
+            const errMsg=document.createElement("p");
+            errMsg.innerText="ooopps failed to load!";
+            shadow.appendChild(errMsg);
         }
     }
     /* Note: recommend to use ONLY in window template scripts */
