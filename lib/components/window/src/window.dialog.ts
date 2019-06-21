@@ -6,7 +6,7 @@ import { WindowController } from "./window";
 export class DialogObject extends WinObject {
     private _modal: WindowModal | null = null;
     private _parent: WindowObject | null = null;
-    constructor(winName: string, message: string, buttons: [string, () => void][], parent: WindowObject | null = WindowObject.Now(), size: [number, number] = [350, 150]) {
+    constructor(winName: string, message: string, buttons: [string, () => void][], parent: WindowObject | null = WindowObject.Now()) {
         super(winName, false, WindowType.Dialog, WindowController.Get().dialogView);
         this.target.classList.add("window-dialog");
         if (parent) {
@@ -15,22 +15,25 @@ export class DialogObject extends WinObject {
             this._parent = parent;
             this._modal = new WindowModal(this);
             if(this._modal.background){
-                this._modal.background.addEventListener("focus", this.Select, true);
-                this._modal.background.addEventListener("focusout", this.UnSelect, true);
-                this.SetPosition((this._modal.background.clientWidth - size[0]) / 2, (this._modal.background.clientHeight - size[1]) / 2);
+                this._modal.background.addEventListener("mousedown", this.Select, true);
             }
         }
         else {
-            this.SetPosition((document.body.clientWidth - size[0]) / 2, (document.body.clientHeight - size[1]) / 2);
+            
         }
-        const width = 350;
-        const height = 150;
         this.SetTitle(winName);
         this.SetMessage(message);
         this.SetButtons(buttons);
-        this.SetSize(size[0], size[1]);
         //window
         this.EndInit();
+        //After attaching, let's set the position.
+        const rect=this.target.getBoundingClientRect();
+        if(this._modal && this._modal.background){
+            this.SetPosition((this._modal.background.clientWidth - rect.width) / 2, (this._modal.background.clientHeight - rect.height) / 2);
+        }
+        else{
+            this.SetPosition((document.body.clientWidth - rect.width) / 2, (document.body.clientHeight - rect.height) / 2);
+        }
     }
     SetMessage(msg: string): void {
         (this.target.getElementsByClassName("window-dialog-message")[0] as HTMLElement).innerText = msg;
@@ -43,14 +46,6 @@ export class DialogObject extends WinObject {
             div.innerText = buttons[i][0];
             div.addEventListener("click", buttons[i][1]);
             buttonsDiv.appendChild(div);
-        }
-    }
-    public Close = (): void => {
-        this.WinCon.RemoveWindow(this);
-        if(this._modal) this._modal.RemoveModal();
-        if (this._parent) {
-            this._parent.modal = null;
-            WindowController.Get().ChangeWindow(this._parent);
         }
     }
     /* do nothing */

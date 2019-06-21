@@ -52,6 +52,7 @@
         /*placeholder ends*/
         flex-grow:1;
         overflow:auto;
+        user-select:none;
     }
     &-resize{
         &-n, &-s{
@@ -90,8 +91,10 @@
     &-dialog{
         text-align: center;
         cursor:default;
-        min-width:250px;
+        width:350px;
+        /*min-width:250px;*/
         min-height:100px;
+        height:auto;
         @extend %noselect;
         &-buttons{
             display: flex;
@@ -107,6 +110,7 @@
             flex-direction: column;
             height: 100%;
             justify-content: center;
+            padding: 1em 1.5em;
         }
         &-message{
             margin-top:0;

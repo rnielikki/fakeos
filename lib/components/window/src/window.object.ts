@@ -11,6 +11,7 @@ export class WindowObject extends WinObject {
     protected _contentPage: HTMLElement;
     protected _modal: WinObject | null = null;
     protected _modalev: Event | null = null;
+    protected programName: string | null = null;
     private _favicon!: HTMLImageElement;
     constructor(winName: string, resizable = true) {
         super(winName, resizable, WindowType.Window, WindowController.Get().view);
@@ -18,7 +19,8 @@ export class WindowObject extends WinObject {
         let menubar = this.target.getElementsByClassName("window-menu")[0];
         let winDir;
         try {
-            winDir = require(`__src__/window/${winName}/${winName}.ts`).default;
+            this.programName=winName.substring(winName.indexOf("/")+1);
+            winDir = require(`__src__/window/${winName}/${this.programName}.ts`).default;
             if (winDir.menu && menubar !== null) {
                 menubar.appendChild(WindowMenu(winDir.menu));
             }
@@ -43,7 +45,8 @@ export class WindowObject extends WinObject {
             this.EndInit();
         }
         catch{
-            this.Close();
+            //this.Close();
+            this.target.remove();
             new DialogObject("Error", "You are trying to load bad egg", [["Oops", WIN.Close]], null);
             return;
         }
@@ -52,23 +55,43 @@ export class WindowObject extends WinObject {
         //safer way than innerHTML
         const parser = new DOMParser();
         const contentPage: HTMLElement = this.target.getElementsByClassName("window-content")[0] as HTMLElement;
-        const shadow = contentPage.shadowRoot || contentPage.attachShadow({mode:"open"});
+        let shadow = contentPage.shadowRoot;
         try {
-            const parsedAll = parser.parseFromString(require(`__src__/window/${this.winName}/${filename}.html`), "text/html");
-            const parsedHead = parsedAll.head.querySelector("style");
-            const parsed = parsedAll.body.children;
-            while(shadow.firstChild){
-                shadow.removeChild(shadow.firstChild);
+            const parsed = parser.parseFromString(require(`__src__/window/${this.winName}/${filename}.html`), "text/html").body.children;
+            const addElems=function(div:HTMLDivElement){
+                for (let i = 0; i < parsed.length; i++) {
+                    div.appendChild(parsed[i]);
+                }
             }
-            contentPage.appendChild(shadow);
-            if(parsedHead)
-                shadow.appendChild(parsedHead);
-            for (let i = 0; i < parsed.length; i++) {
-                shadow.appendChild(parsed[i]);
+            if(!shadow){
+                shadow=contentPage.attachShadow({mode:"open"});
+                const softStyle = require(`!!raw-loader!__src__/window/${this.winName}/${this.programName}.css`).default;
+                const softScript = require(`!!raw-loader!__src__/window/${this.winName}/${this.programName}.js`).default;
+                const sty=document.createElement("style");
+                sty.innerHTML=softStyle;
+                shadow.appendChild(sty);
+                const shadowContent=document.createElement("div");
+                shadowContent.style.width="100%";
+                shadowContent.style.height="100%";
+                addElems(shadowContent);
+                shadow.appendChild(shadowContent);
+                const scr=document.createElement("script");
+                scr.innerHTML=softScript;;
+                contentPage.appendChild(scr);
+            }
+            else{
+                const shadowDiv=shadow.querySelector("div");
+                if(!shadowDiv) return;
+                shadowDiv.innerHTML="";
+                addElems(shadowDiv);
             }
         }
         catch(err){
+            if(!shadow){
+                shadow=contentPage.attachShadow({mode:"open"});
+            }
             const errMsg=document.createElement("p");
+            //console.log(err);
             errMsg.innerText="ooopps failed to load!";
             shadow.appendChild(errMsg);
         }

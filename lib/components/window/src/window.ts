@@ -31,6 +31,10 @@ export class WindowController {
             this.dialogView.appendChild(parsedDialog.firstChild);
         }
         //Event Listener
+        const background:HTMLElement=document.querySelector(".desktop") as HTMLElement;
+        if(background){
+            background.addEventListener("mousedown",()=>this.FocusOutWindow());
+        }
         window.addEventListener("resize", function () {
             WindowController.Get().Windows.filter(obj => parseInt(obj.target.style.left || "0") > docWidth).forEach((obj) => obj.target.style.left = docWidth.toString() + "px");
             WindowController.Get().Windows.filter(obj => parseInt(obj.target.style.top || "0") > docHeight).forEach((obj) => obj.target.style.top = docHeight.toString() + "px");
@@ -43,6 +47,7 @@ export class WindowController {
     public AddWindow(target: WinObject) {
         this.Windows.push(target);
         target.SetOrder(this.Windows.length + 1);
+        this.FocusOnWindow(target);
         document.body.dispatchEvent(target.OpenEvent);
     }
     public RemoveWindow(target: WinObject) {
@@ -53,18 +58,22 @@ export class WindowController {
         if (len > 0) {
             this.FocusOnWindow(this.SortedWindow()[len - 1]);
         }
+        this.FocusOutWindow();
         document.body.dispatchEvent(target.CloseEvent);
     }
     public FocusOnWindow(target: WinObject | null) {
         if (this.ActiveWindow === target) return;
+        if(this._ActiveWindow) this.FocusOutWindow();
         this._ActiveWindow = target;
         if (target) {
             //recent selection
             const sorted = this.SortedWindow();
             const index = sorted.indexOf(target);
-            sorted.slice(index).map(obj => obj.SetOrder(obj.order - 1));
-            target.SetOrder(this.Windows.length + 1);
-            let selection;
+            if(index!==-1){
+                sorted.slice(index).map(obj => obj.SetOrder(obj.order - 1));
+                target.SetOrder(this.Windows.length + 1);
+            }
+            let selection:HTMLElement;
             if (target instanceof WindowObject && target.modal) {
                 this.FocusOnWindow(target.modal);
                 selection = target.modal.target;
@@ -74,7 +83,7 @@ export class WindowController {
                 selection = target.target;
             }
             //editing some bug after closed
-            if (document.activeElement !== selection) selection.focus();
+            //if (document.activeElement !== selection) selection.focus();
             this._LastActive = target;
             document.body.dispatchEvent(target.FocusOnEvent);
         }

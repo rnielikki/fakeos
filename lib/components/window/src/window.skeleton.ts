@@ -1,4 +1,4 @@
-import { WindowController } from "./window"
+import { WindowController, DialogObject } from "./window"
 import { Resizer, direction } from "./resizer";
 import { Position } from "modules/position"
 import { Copyable } from "modules/copyable";
@@ -53,15 +53,13 @@ export abstract class WinObject extends Copyable {
         //init windowbar
         this.windowBar.addEventListener("mousedown", this.Register, false);
         //active window
-        this.target.addEventListener("focus", this.Select, true);
-        this.target.addEventListener("focusout", this.UnSelect, true);
+        this.target.addEventListener("mousedown", this.Select, true);
     }
     /////// ---- Initialization End, Always should be in the end of the derived class constructor ----- /////////
     protected EndInit = (): void => {
         //window
         this.WinCon.AddWindow(this);
-        WindowController.Get().FocusOutWindow();
-        this.Select();
+        //WindowController.Get().FocusOutWindow();
     }
     public SetTitle = (title: string) => {
         this.windowBar.getElementsByTagName("span")[0].innerText = title;
@@ -101,11 +99,18 @@ export abstract class WinObject extends Copyable {
     }
     public SetOrder(order: number) {
         this.target.style.zIndex = order.toString();
-        this.target.tabIndex = order;
         this._order = order;
     }
     public Close = (): void => {
         this.WinCon.RemoveWindow(this);
+        if(this instanceof DialogObject){
+            const dialog=this as DialogObject;
+            if(dialog.modal) dialog.modal.RemoveModal();
+            if (dialog.parent) {
+                dialog.parent.modal = null;
+                WindowController.Get().ChangeWindow(this.parent);
+            }
+        }
     }
     public Select = (e?: Event) => {
         this.WinCon.FocusOnWindow(this);

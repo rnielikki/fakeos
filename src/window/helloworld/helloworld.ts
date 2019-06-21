@@ -9,7 +9,7 @@ export default {
                 {
                     name: "Change Text",
                     action: function (e: Event) {
-                        const innerP = WindowObject.Now()!.contentPage.shadowRoot!.childNodes[1] as HTMLElement;
+                        const innerP = WindowObject.Now()!.contentPage.shadowRoot!.querySelector("div")!.querySelector("p") as HTMLElement;
                         if (innerP) {
                             innerP.innerHTML="lol";
                         }

@@ -5,7 +5,8 @@ Uh… It’s core engine of something like Windows 93 (which is not related to t
 
 ## What I need to develop/use this?
 
-Editor, webpack, node.js and some packages. Typescript and SCSS. If you know only JS and CSS but not Typescript and SCSS, I strongly recommend learning them. They’re neat.
+Editor, webpack, node.js and some packages. Typescript and SCSS.
+JS and CSS for fake software development. All others are Typescript and SCSS.
 
 ## So… What’s the point of this?
 
@@ -43,12 +44,14 @@ FakeOS is component-based program. As a developer, you can add any component or 
 * statusbar
   * menu.ts: way of writing is same as desktop menu, but it isn’t right-click but a start menu. (mandatory)
 * window
-  * Each program/program group folder. For example, you can make system/desktop or system/cmd. (We’ll make in the future!)
+  * They are (program group folder)/program. For example, you can make system/explorer or system/cmd.
   * In a program, it contains:
     * favicon.png (Not mandatory)
     * index.html (mandatory)
       *	You can make more custom html page to load.
-    * program_name.ts (mandatory)  
+    * *program_name*.css (mandatory)
+    * *program_name*.js (mandatory)
+    * *program_name*.ts (mandatory)  
     ```typescript
      {
      title: “title name”,

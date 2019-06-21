@@ -1,0 +1,45 @@
+.paint-wrap{
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+}
+.paint-style{
+    display:grid;
+    grid-template-columns:5em 5em 5em auto;
+    height:100px;
+    background-color: #ccc;
+}
+.paint-style > div{
+    display:flex;
+    align-items: center;
+}
+.paint-style > div:not(.paint-layout-even){
+    justify-content: center;
+}
+.paint-layout-even{
+    justify-content:space-evenly;
+}
+.paint-color-select > div{
+    display:inline-block;
+    width:30px;height:30px;
+}
+.paint-color-current{
+    width:60px;height:60px;
+    margin-right:5px;
+}
+.paint-content{
+    height:100%;
+    background-color:#aaa;
+}
+canvas{
+    background-color:#fff;
+}
+/*pure css simple icons*/
+#paint-brush-round, #paint-brush-rect{
+    border:2px solid #000;
+    width:1.6em; height:1.6em;
+}
+#paint-brush-round{
+    border-radius: 50%;
+}
