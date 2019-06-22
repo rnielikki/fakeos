@@ -19,7 +19,8 @@ export class WindowObject extends WinObject {
         let menubar = this.target.getElementsByClassName("window-menu")[0];
         let winDir;
         try {
-            this.programName=winName.substring(winName.indexOf("/")+1);
+            const nameIndex=winName.lastIndexOf("/");
+            this.programName=winName.substring(nameIndex+1);
             winDir = require(`__src__/window/${winName}/${this.programName}.ts`).default;
             if (winDir.menu && menubar !== null) {
                 menubar.appendChild(WindowMenu(winDir.menu));
@@ -43,6 +44,15 @@ export class WindowObject extends WinObject {
             this.SetPosition(pos, pos);
             new RightMenu(this.windowBar, barmenu.default);
             this.EndInit();
+            //only for system programs, can load ts files for communication...
+            if(winName.substring(0,nameIndex)==="system"){
+                try{
+                    //"lazy loading"
+                    //thanks to ts-loader, loader doesn't load duplicated module
+                    var syscall=require(`__src__/window/${winName}/${this.programName}.system.ts`).default(this);
+                }
+                catch{} //really meh
+            }
         }
         catch{
             //this.Close();

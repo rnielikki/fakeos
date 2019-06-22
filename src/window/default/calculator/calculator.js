@@ -1,6 +1,5 @@
         (function(){
             const thisBody=document.currentScript.parentElement.shadowRoot;
-            console.log(this.parentElement);
             if(!thisBody) return;
             const display=thisBody.getElementById("calc-screen");
             const children=thisBody.getElementById("calc-btns").children;

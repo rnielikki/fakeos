@@ -1,0 +1,13 @@
+.bgchange-wrap{
+    font-family: sans-serif;
+    width:100%;
+    height:100%;
+    width:100%;
+    display:grid;
+    grid-template-columns: auto auto auto;
+    overflow: hidden;
+}
+img{
+    min-width:200px;
+    height: 100%;
+}

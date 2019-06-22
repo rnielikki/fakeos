@@ -58,6 +58,7 @@ FakeOS is component-based program. As a developer, you can add any component or 
      menu: [menuObject], //see menu structure section
      }
      ```
+    * *program_name*.system.ts (only in "system" folder, not mandatory)
  
 ### libraries:
 * new window for new WindowObject()

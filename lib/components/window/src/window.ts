@@ -31,10 +31,7 @@ export class WindowController {
             this.dialogView.appendChild(parsedDialog.firstChild);
         }
         //Event Listener
-        const background:HTMLElement=document.querySelector(".desktop") as HTMLElement;
-        if(background){
-            background.addEventListener("mousedown",()=>this.FocusOutWindow());
-        }
+        document.body.addEventListener("mousedown",()=>this.FocusOutWindow(),true);
         window.addEventListener("resize", function () {
             WindowController.Get().Windows.filter(obj => parseInt(obj.target.style.left || "0") > docWidth).forEach((obj) => obj.target.style.left = docWidth.toString() + "px");
             WindowController.Get().Windows.filter(obj => parseInt(obj.target.style.top || "0") > docHeight).forEach((obj) => obj.target.style.top = docHeight.toString() + "px");
