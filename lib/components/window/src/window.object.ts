@@ -76,7 +76,6 @@ export class WindowObject extends WinObject {
             if(!shadow){
                 shadow=contentPage.attachShadow({mode:"open"});
                 const softStyle = require(`!!raw-loader!__src__/window/${this.winName}/${this.programName}.css`).default;
-                const softScript = require(`!!raw-loader!__src__/window/${this.winName}/${this.programName}.js`).default;
                 const sty=document.createElement("style");
                 sty.innerHTML=softStyle;
                 shadow.appendChild(sty);
@@ -85,9 +84,13 @@ export class WindowObject extends WinObject {
                 shadowContent.style.height="100%";
                 addElems(shadowContent);
                 shadow.appendChild(shadowContent);
-                const scr=document.createElement("script");
-                scr.innerHTML=softScript;;
-                contentPage.appendChild(scr);
+                try{
+                    const scr=document.createElement("script");
+                    const softScript = require(`!!raw-loader!__src__/window/${this.winName}/${this.programName}.js`).default;
+                    scr.innerHTML=softScript;
+                    contentPage.appendChild(scr);
+                }
+                catch{} //meh.
             }
             else{
                 const shadowDiv=shadow.querySelector("div");

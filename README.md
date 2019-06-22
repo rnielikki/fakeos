@@ -50,7 +50,7 @@ FakeOS is component-based program. As a developer, you can add any component or 
     * index.html (mandatory)
       *	You can make more custom html page to load.
     * *program_name*.css (mandatory)
-    * *program_name*.js (mandatory)
+    * *program_name*.js (Not mandatory)
     * *program_name*.ts (mandatory)  
     ```typescript
      {
