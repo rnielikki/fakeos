@@ -11,4 +11,5 @@ function Set() {
     new fakeos.IconObject("default/calculator", null, "matlab");
     new fakeos.IconObject("default/notepad", null, "visual studio code");
     new fakeos.IconObject("badworld", null, "bad egg");
+    new fakeos.IconObject("system/explorer",null,"explorer");
 }

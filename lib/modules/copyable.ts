@@ -4,9 +4,9 @@ abstract class Movable {
     protected mouseY: number = 0;
     protected PositionData: Position | null = null;
     protected _target: HTMLElement;
-    constructor(template: DocumentFragment) {
+    constructor(template: DocumentFragment, appendTarget: HTMLElement=document.body) {
         if (this instanceof Copyable) {
-            this._target = this.NewChild(template);
+            this._target = this.NewChild(template, appendTarget);
         }
         else this._target = template.firstElementChild as HTMLElement || document.createElement("div");
     }
@@ -33,13 +33,14 @@ abstract class Movable {
     public get target(): HTMLElement { return this._target; }
 }
 export abstract class Copyable extends Movable {
-    constructor(template: DocumentFragment) {
-        super(template);
+    constructor(template: DocumentFragment, appendTarget: HTMLElement=document.body) {
+        super(template, appendTarget);
     }
-    NewChild(view: DocumentFragment): HTMLElement {
+    NewChild(view: DocumentFragment, appendTarget: HTMLElement=document.body): HTMLElement {
         const copied = view.cloneNode(true);
         const returnValue = copied.firstChild;
-        document.body.appendChild(copied);
+        if(returnValue===null) console.error("Copyable class has empty DocumentFragment");
+        appendTarget.appendChild(copied);
         return returnValue as HTMLElement;
     }
 }

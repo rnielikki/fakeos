@@ -49,14 +49,15 @@ export class WindowObject extends WinObject {
                 try{
                     //"lazy loading"
                     //thanks to ts-loader, loader doesn't load duplicated module
-                    var syscall=require(`__src__/window/${winName}/${this.programName}.system.ts`).default(this);
+                    require(`__src__/window/${winName}/${this.programName}.system.ts`).default(this);
                 }
                 catch{} //really meh
             }
         }
-        catch{
+        catch(err){
             //this.Close();
             this.target.remove();
+            console.error(err);
             new DialogObject("Error", "You are trying to load bad egg", [["Oops", WIN.Close]], null);
             return;
         }

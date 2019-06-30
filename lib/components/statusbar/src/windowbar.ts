@@ -84,8 +84,6 @@ class WindowBar {
         return bar;
     }
     private ChangeBar(): void {
-        console.log(this.windowObject);
-        console.log(this.windowObject.windowBar);
         this.statusObject.innerText = this.windowObject.windowBar.getElementsByTagName("span")[0].innerHTML;
     }
     private ChangeToThis = () => WindowController.Get().ChangeWindow(this.windowObject);

@@ -16,7 +16,6 @@
         ctx.stroke();
     }
     const setDraw=function(e){
-        console.log(thisBody.host.getBoundingClientRect());
         styleBuffer.left=parseInt(win.style.left);
         styleBuffer.top=parseInt(win.style.top);
         ctx.beginPath();

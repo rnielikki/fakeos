@@ -1,0 +1,37 @@
+.explorer-head{
+    background-color:#aaa;
+    overflow: hidden;
+    position: sticky;
+    top:0;
+    width: 100%;
+}
+.explorer-head-state{
+    margin:.7em .5em;
+    border:2px inset #ccc;
+    height:1.1em;
+    background-color:#fff;
+}
+.explorer-head-menu{
+    display:flex;
+}
+.explorer-head-menu div{
+    border:2px solid transparent;
+    flex-grow:1;
+    flex-shrink: 1;
+    text-align: center;
+}
+.explorer-head-menu div:active{
+    border:2px inset #ccc;
+    background-color: #999;
+}
+.explorer-body{
+    position: relative;
+}
+.explorer-body .icon{
+    position: absolute;
+    -moz-user-drag:none;
+    -webkit-user-drag:none;
+}
+.explorer-body .icon-img {
+    width:48px;
+}
