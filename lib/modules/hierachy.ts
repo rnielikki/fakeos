@@ -3,8 +3,12 @@ const test={"a":"b", "c":"d"}
 export type FileTree={
     parent:FileTree|null;
     name:string;
-    children:Array<FileTree>|null;
-    isDirectory:boolean;
+    children:Array<FileTree> | null;
+    fileInfo:FileInfo | null;
+}
+export type FileInfo={
+    realName:string; //remembers real require path to load
+    data:string;//file open with data will be added
 }
 //change this the way, whatever you want.
 export const Drive=ParseTree({
@@ -15,7 +19,11 @@ export const Drive=ParseTree({
         "Users":{
             "Admin":{},
             "localhost":{
-                "Documents":{},
+                "Documents":{
+                        'readme.txt':'__root__/readme.md',
+                        'about_backgrounds.txt':'__src__/resource/backgrounds/LICENSE.txt',
+                        'license.txt':'__root__/LICENSE'
+                    },
                 "Videos":{},
                 "Images":GetFiles(require.context('__src__/resource/backgrounds',false,/.*(\.jpg)$/).keys(),"jpg")
             }
@@ -30,7 +38,7 @@ function ParseTree(inputs:string|object|null, dirname:string, parent:FileTree|nu
         parent: parent,
         name: dirname,
         children: new Array<FileTree>(),
-        isDirectory: true
+        fileInfo: null
     }
     const input=inputs as {[index:string]:string|object|null}
     if(input){
@@ -43,7 +51,10 @@ function ParseTree(inputs:string|object|null, dirname:string, parent:FileTree|nu
                     parent:TreeRoot,
                     name: name,
                     children: null,
-                    isDirectory: false
+                    fileInfo: {
+                        realName: name,
+                        data: "_"
+                    }
                 }
                 acc.push(childTree);
             }

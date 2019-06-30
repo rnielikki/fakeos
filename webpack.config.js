@@ -39,7 +39,8 @@ module.exports = {
   resolve: {
     alias:{
       __src__:path.resolve(__dirname, "src"),
-      __lib__:path.resolve(__dirname, "lib")
+      __lib__:path.resolve(__dirname, "lib"),
+      __root__:path.resolve(__dirname)
     },
 		modules: [path.resolve(__dirname, "src"), path.resolve(__dirname, "lib"), "node_modules"],
     extensions: [ '.tsx', '.ts', '.js', '.html' ],

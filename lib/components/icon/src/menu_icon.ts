@@ -1,10 +1,9 @@
 import { IconController } from "./icon";
-
 export default[
     {
         name:"change name",
         action:()=>{
-            const sel=IconController.Get().lastselect;
+            const sel=IconController.lastselect;
             //if(sel) sel.setName("hello, world!");
             if(sel) sel.EditMode();
         }
@@ -12,7 +11,7 @@ export default[
     {
         name:"delete",
         action:()=>{
-            const sel=IconController.Get().lastselect;
+            const sel=IconController.lastselect;
             if(sel) sel.Remove();
         }
     }

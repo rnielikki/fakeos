@@ -8,7 +8,7 @@ export class IconController {
     private static _view: DocumentFragment = document.createDocumentFragment();
     protected _background:HTMLElement;
     protected _selected: IconObject | null;
-    protected _lastselect: IconObject | null;
+    protected static _lastselect: IconObject | null;
     private static _this: IconController;
     private static _iconMargin: number = 105;
     public iconCount: number;
@@ -17,7 +17,7 @@ export class IconController {
     protected constructor(background:HTMLElement=document.body) {
         this._background=background;
         this._selected=null;
-        this._lastselect=null;
+        IconController._lastselect=null;
         this.iconCount=0;
     }
     //if "sealed"(or final) method is implemented in typescript, we'll make it "sealed".
@@ -39,7 +39,7 @@ export class IconController {
         if (this._selected !== null) this.UnSelectIcon();
         target.target.classList.add("icon-selected");
         this._selected = target;
-        this._lastselect = target;
+        IconController._lastselect = target;
     }
     public UnSelectIcon = () => {
         if (this._selected === null) return;
@@ -52,7 +52,7 @@ export class IconController {
     }
     public static get view(): DocumentFragment { return this._view; }
     public get selected() { return this._selected; }
-    public get lastselect() { return this._lastselect; }
+    public static get lastselect() { return IconController._lastselect; }
     public get background(){ return this._background; }
     public static get iconMargin(): number { return this._iconMargin; }
     public static get iconPerCol(): number { return this._iconPerCol; }
@@ -71,7 +71,9 @@ export class IconObject extends Copyable {
         Action = !Action ? () => new WindowObject(iconName) : Action;
         this.target.addEventListener("dblclick", Action);
         this.target.addEventListener("mousedown", this.Select);
-        this.SetPosition(...controller.DefaultPosition());
+        if(controller===IconController.Get()){
+            this.SetPosition(...controller.DefaultPosition());
+        }
         new RightMenu(this.target,iconMenu.default);
         controller.iconCount++;
     }

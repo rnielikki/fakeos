@@ -27,11 +27,31 @@
 .explorer-body{
     position: relative;
 }
+/* because css is loaded when shadow dom opens so "insulated" from main. you must add on your own... */
 .explorer-body .icon{
-    position: absolute;
-    -moz-user-drag:none;
-    -webkit-user-drag:none;
+    display: inline-block;
+    margin:1.1em;
+    vertical-align: top;
 }
-.explorer-body .icon-img {
+.explorer-body .icon-img, .explorer-body .icon {
     width:48px;
+}
+.icon-selected .icon-img{
+    filter: sepia(80%) hue-rotate(180deg) brightness(0.6);
+}
+.icon-selected  .icon-label{
+    background-color:rgba(45,45,105,0.5);
+    overflow:visible;
+    height:auto;
+}
+.icon-label{
+    font-size:90%;
+    word-wrap:break-word;
+    overflow:hidden;
+    text-align: center;
+}
+.icon-label[contenteditable="true"] {
+    background-color: #fff !important;
+    text-shadow: none;
+    color: #000;
 }

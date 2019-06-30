@@ -29,6 +29,7 @@ export default function(target:WindowObject){
         if(resetStatus!==null){
             thisStatus.innerText=resetStatus;
         }
+        controller.iconCount=0;
         attachTarget.innerHTML="";
         for(let i=0;i<len;i++){
             let action:(() => void) | null;
@@ -37,7 +38,7 @@ export default function(target:WindowObject){
             let iconName:string;
             realName=child.name;
             if(child!==null){
-                if(child.isDirectory){
+                if(child.fileInfo===null){
                     if(child.children!==null){
                         action=()=>{ 
                             thisStatus.innerText+=realName+"\\"; Render(child);
@@ -49,14 +50,18 @@ export default function(target:WindowObject){
                     iconName=(currentPath===Drive)?"explorer/drive":"explorer/folder";
                 }
                 else{
-                    const fileName=child.name;
+                    const fileName=child.fileInfo.realName;
                     const lastIndex=fileName.lastIndexOf(".");
                     realName=fileName.substring(0,lastIndex);
                     const program=GetMime(fileName.substring(lastIndex+1)) || ((currentPath==__system)?"system/":"")+realName;
                     action=()=>new WindowObject(program);
                     iconName=program;
                 }
-                new IconObject(realName, action, child.name, iconName, controller);
+                const icon=new IconObject(realName, action, child.name, iconName, controller);
+                //this changes real name in the file tree
+                icon.labelObject.addEventListener("focusout", ()=>{
+                    child.name=icon.labelObject.innerText;
+                });
             }
         }
     }
