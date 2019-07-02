@@ -1,10 +1,16 @@
 export enum MenuDirection { up, down, upLeft, downLeft };
-export function build(source: any[]): DocumentFragment {
+export type Menu={
+    name:string;
+    action?:()=>void;
+    menu?:Menu[];
+    vmenu?:Menu[];
+}
+export function build(source: Menu[]): DocumentFragment {
     let frag = document.createDocumentFragment();
     buildRecursion(source, frag);
     return frag;
 }
-function buildRecursion(src: any, parent: HTMLElement | DocumentFragment): void {
+function buildRecursion(src: Menu[], parent: HTMLElement | DocumentFragment): void {
     if (!src) return;
     const it = src[Symbol.iterator]();
     let current;
@@ -36,14 +42,14 @@ function buildRecursion(src: any, parent: HTMLElement | DocumentFragment): void 
                 buildRecursion(current.value.vmenu, elem2);
             }
             else {
-                buildRecursion(current.value.menu, elem2);
+                buildRecursion(current.value.menu!, elem2);
             }
             elem.appendChild(elem2);
         }
         parent.appendChild(elem);
     }
 }
-export function WindowMenu(Menu: { name: string, action?: () => void, menu?: any }[]): DocumentFragment {
+export function WindowMenu(Menu: { name: string, action?: () => void, menu?: Menu[] }[]): DocumentFragment {
     const len = Menu.length;
     const frag = document.createDocumentFragment();
     for (let i = 0; i < len; i++) {
@@ -55,7 +61,7 @@ export function WindowMenu(Menu: { name: string, action?: () => void, menu?: any
         wrap.appendChild(title);
         if (Menu[i].menu) {
             document.createElement("div");
-            new ClickMenu(Menu[i].menu, title).SetClassList(["window-submenu", "menu-secondary"]);
+            new ClickMenu(Menu[i].menu!, title).SetClassList(["window-submenu", "menu-secondary"]);
         }
         frag.appendChild(wrap);
     }
@@ -63,11 +69,11 @@ export function WindowMenu(Menu: { name: string, action?: () => void, menu?: any
 }
 export class PrimaryMenu {
     public static ActiveMenu: PrimaryMenu | null = null;
-    protected menu: any[];
+    protected menu: Menu[];
     protected _div: HTMLElement | null = null;
     protected appendTarget: HTMLElement = document.body;
     protected primaryDivClass: string[] = [];
-    constructor(menu: any[]) {
+    constructor(menu: Menu[]) {
         this.menu = menu;
     }
     protected ShowMenu = (e?: Event, left?: number, top?: number, direction?: MenuDirection): void => {
@@ -112,7 +118,7 @@ export class PrimaryMenu {
     public get div() { return this._div; }
 }
 export class ClickMenu extends PrimaryMenu {
-    constructor(menu: any[], btn: HTMLElement) {
+    constructor(menu: Menu[], btn: HTMLElement) {
         super(menu);
         this.appendTarget = btn.parentElement!;
         btn.addEventListener("click", this.ShowMenu);

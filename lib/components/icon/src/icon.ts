@@ -2,7 +2,7 @@ import { Copyable } from "modules/copyable";
 import { WindowObject } from "components/window/src/window";
 import { RightMenu } from "modules/rightclick"
 import { docHeight } from "modules/position";
-import * as iconMenu from "./menu_icon";
+import { Menu } from "modules/menu";
 
 export class IconController {
     private static _view: DocumentFragment = document.createDocumentFragment();
@@ -14,6 +14,23 @@ export class IconController {
     public iconCount: number;
     private static _iconPerCol: number;
     protected static parsedIcon = (new DOMParser()).parseFromString(require(`../icon.html`), "text/html").body.firstChild;
+    protected static _iconMenu:Menu[]=[
+        {
+            name:"change name",
+            action:()=>{
+                const sel=IconController.lastselect;
+                //if(sel) sel.setName("hello, world!");
+                if(sel) sel.EditMode();
+            }
+        },
+        {
+            name:"delete",
+            action:()=>{
+                const sel=IconController.lastselect;
+                if(sel) sel.Remove();
+            }
+        }
+    ];
     protected constructor(background:HTMLElement=document.body) {
         this._background=background;
         this._selected=null;
@@ -56,6 +73,7 @@ export class IconController {
     public get background(){ return this._background; }
     public static get iconMargin(): number { return this._iconMargin; }
     public static get iconPerCol(): number { return this._iconPerCol; }
+    public get iconMenu():Menu[] { return IconController._iconMenu; }
 }
 export class IconObject extends Copyable {
     private _icon!: HTMLImageElement;
@@ -74,7 +92,7 @@ export class IconObject extends Copyable {
         if(controller===IconController.Get()){
             this.SetPosition(...controller.DefaultPosition());
         }
-        new RightMenu(this.target,iconMenu.default);
+        new RightMenu(this.target,this.controller.iconMenu);
         controller.iconCount++;
     }
     setIcon(iconName: string, custom: boolean = false) {

@@ -33,6 +33,12 @@ module.exports = {
         use:{
           loader: 'file-loader'
         }
+      },
+      {
+        test: /\.(txt)$/,
+        use:{
+          loader: 'text-loader'
+        }
       }
     ]
   },

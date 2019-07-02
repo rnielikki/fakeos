@@ -78,7 +78,7 @@ FakeOS is component-based program. As a developer, you can add any component or 
               //note: currently we support vmenu(vertical menu), but I don’t know if it’s useful.
    }
    ```
-* menu is object array. (in source code, it's any[] type)
+* menu is "Menu" type array. (Menu[])
 * Since menu contains function, it cannot be a JSON. But if you want to make JSON, remember to change the action to string.
 * If you’re not sure, see the example in the file.
 

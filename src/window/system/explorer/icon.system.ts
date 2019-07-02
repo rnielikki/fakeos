@@ -1,6 +1,17 @@
 import { IconController } from "__lib__/components/icon/src/icon";
+import { Menu } from "__lib__/modules/menu";
 export class ExplorerController extends IconController{
     public iconCount:number=0;
+    protected static _iconMenu:Menu[]=[
+        {
+            name:"change name",
+            action:()=>{
+                const sel=IconController.lastselect;
+                //if(sel) sel.setName("hello, world!");
+                if(sel) sel.EditMode();
+            }
+        }
+    ];
     public constructor(background:HTMLElement){
         super(background);
     }
@@ -13,4 +24,5 @@ export class ExplorerController extends IconController{
     /*public DefaultPosition = ():[number, number] => {
         return [(this.iconCount % IconController.iconPerCol) * IconController.iconMargin,Math.floor(this.iconCount / IconController.iconPerCol) * IconController.iconMargin];
     }*/
+    public get iconMenu():Menu[] { return ExplorerController._iconMenu; }
 }

@@ -63,7 +63,6 @@ export class WindowObject extends WinObject {
         }
     }
     public SetContent = (filename: string) => {
-        //safer way than innerHTML
         const parser = new DOMParser();
         const contentPage: HTMLElement = this.target.getElementsByClassName("window-content")[0] as HTMLElement;
         let shadow = contentPage.shadowRoot;
@@ -78,7 +77,7 @@ export class WindowObject extends WinObject {
                 shadow=contentPage.attachShadow({mode:"open"});
                 const softStyle = require(`!!raw-loader!__src__/window/${this.winName}/${this.programName}.css`).default;
                 const sty=document.createElement("style");
-                sty.innerHTML=softStyle;
+                sty.textContent=softStyle;
                 shadow.appendChild(sty);
                 const shadowContent=document.createElement("div");
                 shadowContent.style.width="100%";
@@ -88,7 +87,7 @@ export class WindowObject extends WinObject {
                 try{
                     const scr=document.createElement("script");
                     const softScript = require(`!!raw-loader!__src__/window/${this.winName}/${this.programName}.js`).default;
-                    scr.innerHTML=softScript;
+                    scr.textContent=softScript;
                     contentPage.appendChild(scr);
                 }
                 catch{} //meh.
@@ -96,7 +95,7 @@ export class WindowObject extends WinObject {
             else{
                 const shadowDiv=shadow.querySelector("div");
                 if(!shadowDiv) return;
-                shadowDiv.innerHTML="";
+                shadowDiv.textContent="";
                 addElems(shadowDiv);
             }
         }
@@ -105,9 +104,20 @@ export class WindowObject extends WinObject {
                 shadow=contentPage.attachShadow({mode:"open"});
             }
             const errMsg=document.createElement("p");
-            //console.log(err);
-            errMsg.innerText="ooopps failed to load!";
+            console.error(err);
+            errMsg.innerText="ooopps failed to load! press f12 and read console to check why";
             shadow.appendChild(errMsg);
+        }
+    }
+    public OpenFile=(data:string | HTMLElement)=>{
+        const content=this.contentPage.shadowRoot!.querySelector(".window-content-fill") as HTMLElement;
+        if(content===null) return;
+        else if(typeof data==="string"){
+            content.innerHTML=data; //for line break..... :/
+        }
+        else{
+            content.textContent="";
+            content.appendChild(data);
         }
     }
     /* Note: recommend to use ONLY in window template scripts */

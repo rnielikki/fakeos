@@ -1,5 +1,5 @@
 import { WindowObject } from "__lib__/index";
-import { FileTree, Drive } from "__lib__/modules/hierachy";
+import { FileTree, Drive, __system, __userdir } from "__lib__/modules/hierachy";
 import { IconObject } from "__lib__/components/icon/src/icon";
 import { ExplorerController } from "./icon.system";
 import { DialogObject, WIN } from "../../../../lib/index";
@@ -12,12 +12,12 @@ export default function(target:WindowObject){
     if(attachTarget===null) return;
     const controller:ExplorerController = new ExplorerController(attachTarget);
     var dirPath:FileTree=Drive;
-    const [__system, __userdir]=[FromAbsolutePath(["C:","System42"]), FromAbsolutePath(["C:","Users","localhost"])];
     (function(){
         thisMenuUp.addEventListener("click",()=>Render(dirPath.parent,thisStatus.innerText.replace(/[^\\]*\\$/,"")));
         thisMenu.querySelector(".explorer-menu-root")!.addEventListener("click",()=>Render(Drive,""));
-        thisMenu.querySelector(".explorer-menu-userdir")!.addEventListener("click",()=>Render(FromAbsolutePath(["C:","Users","localhost"]),"C:\\Users\\localhost\\"))
+        thisMenu.querySelector(".explorer-menu-userdir")!.addEventListener("click",()=>Render(__userdir));
     })();
+    console.log(dirPath);
     Render(dirPath);
     //Change IconObject to set the target.
     function Render(currentPath:FileTree|null, resetStatus:string|null=null){
@@ -30,7 +30,7 @@ export default function(target:WindowObject){
             thisStatus.innerText=resetStatus;
         }
         controller.iconCount=0;
-        attachTarget.innerHTML="";
+        attachTarget.textContent="";
         for(let i=0;i<len;i++){
             let action:(() => void) | null;
             let child:FileTree=children[i];
@@ -47,15 +47,16 @@ export default function(target:WindowObject){
                     else{
                         action=()=>new DialogObject("Error", "Permission denied", [[":(", WIN.Close]]);
                     }
-                    iconName=(currentPath===Drive)?"explorer/drive":"explorer/folder";
+                    iconName=(currentPath===Drive)?"drive":"folder";
                 }
                 else{
                     const fileName=child.fileInfo.realName;
                     const lastIndex=fileName.lastIndexOf(".");
+                    const getMime=GetMime(fileName.substring(lastIndex+1));
                     realName=fileName.substring(0,lastIndex);
-                    const program=GetMime(fileName.substring(lastIndex+1)) || ((currentPath==__system)?"system/":"")+realName;
-                    action=()=>new WindowObject(program);
-                    iconName=program;
+                    const program=getMime[0] || ((currentPath==__system)?"system/":"")+realName;
+                    action=()=>{ let w=new WindowObject(program); (getMime[1] && child.fileInfo!.data)?w.OpenFile(getMime[1](child.fileInfo!.data)):0; };
+                    iconName=(currentPath==__system)?"fakeos":program;
                 }
                 const icon=new IconObject(realName, action, child.name, iconName, controller);
                 //this changes real name in the file tree
@@ -65,28 +66,15 @@ export default function(target:WindowObject){
             }
         }
     }
-    function FromAbsolutePath(pathList:string[]):FileTree|null{
-        let current:FileTree|null=Drive;
-        const pathLen=pathList.length;
-        for(let i=0;i<pathLen;i++){
-            let c:Array<FileTree|string>|null=current!.children
-            if(c===null) return null;
-            current=c.filter(obj=>{
-                return (obj as FileTree!==null && typeof obj!=="string")?obj.name==pathList[i]:false;
-            })[0] as FileTree;
-            if(current===null) return null;
-        }
-        return current;
-    }
-    function GetMime(extension:string):string{
+    function GetMime(extension:string):[string | null, ((src:string)=>string|HTMLElement) | null]{
         switch(extension){
             case "jpg":
             case "png":
-                return "default/paint";
+                return ["default/paint",(src)=>{ let img=document.createElement("img"); img.src=src; return img; }];
             case "txt":
-                return "default/notepad";
+                return ["default/notepad", (src)=>src.replace(/\n/g,"&#13;&#10;")];
             default:
-                return "";
+                return [null, null];
         }
     }
 }

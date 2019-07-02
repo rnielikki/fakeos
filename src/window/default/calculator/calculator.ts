@@ -1,3 +1,3 @@
 export default {
-    title: "title name"
+    title: "Ca+lc-ul*at/or="
 }
