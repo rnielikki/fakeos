@@ -1,6 +1,6 @@
 /* list of components and modules */
 /* if you add components or modules with css, please add to index.scss too */
-import { WindowObject, WindowController, DialogObject, WIN } from 'components/window/src/window';
+import { WindowObject, WindowController, DialogObject, WIN, WindowData } from 'components/window/src/window';
 import { StatusBarObject } from 'components/statusbar/src/statusbar';
 import { IconObject } from 'components/icon/src/icon';
 import { DesktopObject } from 'components/desktop/src/desktop';
@@ -15,6 +15,7 @@ export {
   IconObject,
   RightMenu,
   DesktopObject,
+  WindowData
 };
 Init.default();
 /* css

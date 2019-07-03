@@ -118,13 +118,17 @@ function GetFiles(context:__WebpackModuleApi.RequireContext,extension:string, ex
     }
     return value;
 }
-function FromAbsolutePath(pathList:string[]):FileTree|null{
-    let current:FileTree|null=Drive;
+type Dir={path:FileTree; label:string;};
+function FromAbsolutePath(pathList:string[]):Dir|null{
+    let current:Dir={
+        path:Drive,
+        label:pathList.join("\\")+"\\"
+    };
     const pathLen=pathList.length;
     for(let i=0;i<pathLen;i++){
-        let c:Array<FileTree|string>|null=current!.children
+        let c:Array<FileTree|string>|null=current.path!.children
         if(c===null) return null;
-        current=c.filter(obj=>{
+        current.path=c.filter(obj=>{
             return (obj as FileTree!==null && typeof obj!=="string")?obj.name==pathList[i]:false;
         })[0] as FileTree;
         if(current===null) return null;

@@ -7,7 +7,7 @@ export class DialogObject extends WinObject {
     private _modal: WindowModal | null = null;
     private _parent: WindowObject | null = null;
     constructor(winName: string, message: string, buttons: [string, () => void][], parent: WindowObject | null = WindowObject.Now()) {
-        super(winName, false, WindowType.Dialog, WindowController.Get().dialogView);
+        super(winName, WindowType.Dialog, WindowController.Get().dialogView);
         this.target.classList.add("window-dialog");
         if (parent) {
             parent.target.appendChild(this.target);

@@ -1,14 +1,15 @@
-import { DialogObject, WindowObject, WIN } from "__lib__/index";
+import { DialogObject, WindowObject, WIN, WindowData } from "__lib__/index";
 
-export default {
+const app:WindowData= {
     title: "hello world program",
+    resizable: true,
     menu: [
         {
             name: "Menu1",
             menu: [
                 {
                     name: "Change Text",
-                    action: function (e: Event) {
+                    action: ()=> {
                         const innerP = WindowObject.Now()!.contentPage.shadowRoot!.querySelector("div")!.querySelector("p") as HTMLElement;
                         if (innerP) {
                             innerP.innerHTML="lol";
@@ -43,7 +44,7 @@ export default {
                 },
                 {
                     name: "Exit",
-                    action: (e: Event) => {
+                    action: () => {
                         new DialogObject("See ya!", "Bye!", [["OK", WIN.CloseAll]])
                     }
                 }
@@ -63,3 +64,4 @@ export default {
         }
     ]
 };
+export default app;

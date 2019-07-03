@@ -6,5 +6,5 @@ export default [{
 },
 {
     name: "Change the BG!",
-    action: () => new WindowObject("system/background",false)
+    action: () => new WindowObject("system/background")
 }]

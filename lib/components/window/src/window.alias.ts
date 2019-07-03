@@ -17,7 +17,7 @@ export class WIN {
     public static Maximize(): void {
         const LastActive=WindowController.Get().LastActive!;
         if(LastActive.minimized) this.UnMinimize();
-        if(!LastActive.maximized) LastActive.Maximize();
+        if(LastActive instanceof WindowObject && !LastActive.maximized) LastActive.Maximize();
         LastActive.Select();
     }
     public static Close(): void {

@@ -1,6 +1,4 @@
 import { WindowController, DialogObject } from "./window"
-import { Resizer, direction } from "./resizer";
-import { Position } from "modules/position"
 import { Copyable } from "modules/copyable";
 
 export enum WindowType { Window, Dialog };
@@ -12,7 +10,6 @@ export abstract class WinObject extends Copyable {
     protected _title: string = ""; //program title
     protected WinCon: WindowController = WindowController.Get();
     protected _minimized: boolean = false;
-    protected _maximized: boolean = false;
     protected _order: number = 0;
 
     //Events
@@ -21,32 +18,19 @@ export abstract class WinObject extends Copyable {
     public FocusOnEvent = new CustomEvent("winfocus", { detail: this });
     public FocusOutEvent = new CustomEvent("winfocusout", { detail: this });
 
-    constructor(winName: string, resizable: boolean = true, wType: WindowType = WindowType.Window, Template: DocumentFragment = WindowController.Get().view) {
+    constructor(winName: string, wType: WindowType = WindowType.Window, Template: DocumentFragment = WindowController.Get().view) {
         super(Template);
         this._winName = winName;
         this._windowBar = this.target.getElementsByClassName("window-title")[0] as HTMLElement;
-        this._resizable = resizable;
+        this._resizable = false;
         this.Init(wType);
     }
     private Init(wType: WindowType) {
-        //init resize buttons
-        if (this.resizable) {
-            new Resizer(this.target.getElementsByClassName("window-resize-n")[0] as HTMLElement, this.target, direction.north);
-            new Resizer(this.target.getElementsByClassName("window-resize-s")[0] as HTMLElement, this.target, direction.south);
-            new Resizer(this.target.getElementsByClassName("window-resize-e")[0] as HTMLElement, this.target, direction.east);
-            new Resizer(this.target.getElementsByClassName("window-resize-w")[0] as HTMLElement, this.target, direction.west);
-            new Resizer(this.target.getElementsByClassName("window-resize-ne")[0] as HTMLElement, this.target, direction.ne);
-            new Resizer(this.target.getElementsByClassName("window-resize-se")[0] as HTMLElement, this.target, direction.se);
-            new Resizer(this.target.getElementsByClassName("window-resize-nw")[0] as HTMLElement, this.target, direction.nw);
-            new Resizer(this.target.getElementsByClassName("window-resize-sw")[0] as HTMLElement, this.target, direction.sw);
-        }
         //init buttons
         if (wType !== WindowType.Dialog) {
             this.windowBar.getElementsByClassName("title-minimize")[0].addEventListener("mousedown", this.NoMove, false);
             this.windowBar.getElementsByClassName("title-maximize")[0].addEventListener("mousedown", this.NoMove, false);
             this.windowBar.getElementsByClassName("title-minimize")[0].addEventListener("click", this.Minimize, false);
-            this.windowBar.getElementsByClassName("title-maximize")[0].addEventListener("click", this.Maximize, false);
-            this.windowBar.addEventListener("dblclick", this.Maximize, false);
         }
         this.windowBar.getElementsByClassName("title-close")[0].addEventListener("mousedown", this.NoMove, false);
         this.windowBar.getElementsByClassName("title-close")[0].addEventListener("click", this.Close, false);
@@ -77,22 +61,6 @@ export abstract class WinObject extends Copyable {
         this._minimized = false;
         this.WinCon.ChangeWindow(this);
     }
-    public Maximize = () => {
-        if (this.PositionData === null) {
-            this.PositionData = new Position(this.target.clientWidth, this.target.clientHeight, this.target.offsetTop, this.target.offsetLeft);
-            this.target.style.width = "100%";
-            this.target.style.height = "100%";
-            this.target.style.top = "0";
-            this.target.style.left = "0";
-            this._maximized=true;
-        }
-        else {
-            this.PositionData.SetStyle(this.target);
-            this.PositionData = null;
-            this._maximized=false;
-        }
-        this._resizable = !this.resizable;
-    }
     public SetSize(width: number, height: number): void {
         this.target.style.width = width + "px";
         this.target.style.height = height + "px";
@@ -122,7 +90,6 @@ export abstract class WinObject extends Copyable {
     public get winName(): string { return this._winName; }
     public get windowBar(): HTMLElement { return this._windowBar; }
     public get minimized(): boolean { return this._minimized; }
-    public get maximized(): boolean { return this._maximized; }
     public get title():string { return this._title; }
     public get resizable(): boolean { return this._resizable; }
     public get order(): number { return this._order; }

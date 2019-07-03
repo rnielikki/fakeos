@@ -51,12 +51,16 @@ FakeOS is component-based program. As a developer, you can add any component or 
       *	You can make more custom html page to load.
     * *program_name*.css (mandatory)
     * *program_name*.js (Not mandatory)
-    * *program_name*.ts (mandatory)  
+    * *program_name*.ts (mandatory)
     ```typescript
-     {
+    import { WindowData } from "__lib__/index";
+
+     const app={
      title: “title name”,
-     menu: [menuObject], //see menu structure section
+     resizable: true|false,
+     menu?: [menuObject], //optional, see menu structure section
      }
+     export default app;
      ```
     * *program_name*.system.ts (only in "system" folder, not mandatory)
  

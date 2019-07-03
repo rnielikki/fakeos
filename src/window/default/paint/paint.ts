@@ -1,6 +1,7 @@
-import { DialogObject, WIN } from "__lib__/index";
-export default {
+import { DialogObject, WIN, WindowData } from "__lib__/index";
+const app:WindowData = {
     title: "Noname - paint",
+    resizable: true,
     menu: [{
             name: "File",
             menu:[{
@@ -30,3 +31,4 @@ export default {
             }]
         }]
 }
+export default app;

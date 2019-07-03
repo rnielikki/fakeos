@@ -7,12 +7,12 @@ export enum direction {
 export class Resizer {
     private pos: Position | null = null;
     private resizeType: Function;
-    private self: HTMLElement;
+    private _self: HTMLElement;
     private target: HTMLElement;
     mouseX: number = 0;
     mouseY: number = 0;
     constructor(self: HTMLElement, target: HTMLElement, type: direction) {
-        this.self = self;
+        this._self = self;
         this.target = target;
         switch (type) {
             case direction.east:
@@ -46,7 +46,7 @@ export class Resizer {
         this.Init();
     }
     Init() {
-        this.self.addEventListener("mousedown", this.ResizeRegister, false);
+        this._self.addEventListener("mousedown", this.ResizeRegister, false);
     }
     private ResizeRegister = (e: Event) => {
         let me: MouseEvent = e as MouseEvent;
@@ -88,4 +88,5 @@ export class Resizer {
         document.removeEventListener("mousemove", this.Resize, false);
         this.pos = null;
     }
+    public get self(){ return this._self; }
 }

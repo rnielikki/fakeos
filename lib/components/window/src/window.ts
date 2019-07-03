@@ -1,6 +1,6 @@
 ﻿import { docWidth, docHeight } from "modules/position";
 import { WinObject } from "./window.skeleton";
-import { WindowObject  } from "./window.object";
+import { WindowObject, WindowData } from "./window.object";
 import { DialogObject } from "./window.dialog";
 import { WIN } from "./window.alias";
 
@@ -8,13 +8,15 @@ export {
     WinObject,
     WindowObject,
     DialogObject,
-    WIN
+    WIN,
+    WindowData
 }
 export class WindowController {
     private _Windows: WinObject[] = new Array(); //order by recently selected
     private static _this: WindowController | undefined;
     private _view: DocumentFragment = document.createDocumentFragment();
     private _dialogView: DocumentFragment = document.createDocumentFragment();
+    private _resizerView: DocumentFragment = document.createDocumentFragment();
     private _ActiveWindow: WinObject | null = null;
     private _LastActive: WinObject | null = null;
     private _next: IterableIterator<number> = this.nextPos();
@@ -24,11 +26,15 @@ export class WindowController {
         const parser = new DOMParser();
         const parsedWin = parser.parseFromString(require(`../window.html`), "text/html").body;
         const parsedDialog = parser.parseFromString(require(`../dialog.html`), "text/html").body;
+        const parsedResizers = parser.parseFromString(require(`../resizer.html`), "text/html").body;
         if (parsedWin.firstChild) {
             this.view.appendChild(parsedWin.firstChild);
         }
         if (parsedDialog.firstChild) {
             this.dialogView.appendChild(parsedDialog.firstChild);
+        }
+        if (parsedResizers.firstChild) {
+            [...parsedResizers.children].forEach((resizer)=>this._resizerView.appendChild(resizer));
         }
         //Event Listener
         document.body.addEventListener("mousedown",()=>this.FocusOutWindow(),true);
@@ -99,6 +105,7 @@ export class WindowController {
     //getters
     public get view() { return this._view; }
     public get dialogView() { return this._dialogView; }
+    public get resizerView() { return this._resizerView; }
     public get ActiveWindow() { return this._ActiveWindow; }
     public get Windows() { return this._Windows; }
     public get LastActive() { return this._LastActive; }
