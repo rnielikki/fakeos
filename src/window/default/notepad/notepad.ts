@@ -2,6 +2,7 @@ import { DialogObject, WIN, WindowData } from "__lib__/index";
 const app:WindowData= {
     title: "Noname - notepad",
     resizable: true,
+    fileOpen: (src:string, page:ShadowRoot)=>{ page.querySelector("textarea")!.innerHTML=src.replace(/\n/g,"&#13;&#10;") },
     menu: [{
             name: "File",
             menu:[{

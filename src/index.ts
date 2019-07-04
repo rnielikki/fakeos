@@ -6,10 +6,10 @@ window.onload = function () {
 function Set() {
     fakeos.StatusBarObject.Set();
     fakeos.DesktopObject.Get();
+    new fakeos.IconObject("system/explorer",null,"My Computer","computer");
+    new fakeos.IconObject("system/explorer",(()=>{ const n=new fakeos.WindowObject("system/explorer"); n.OpenFile("C:\\Users\\localhost"); }),"My Documents","folder");
     new fakeos.IconObject("helloworld", null, "hello world");
     new fakeos.IconObject("default/paint", null, "photoshop");
     new fakeos.IconObject("default/calculator", null, "matlab");
     new fakeos.IconObject("default/notepad", null, "visual studio code");
-    //new fakeos.IconObject("badworld", null, "bad egg");
-    new fakeos.IconObject("system/explorer",null,"explorer","folder");
 }

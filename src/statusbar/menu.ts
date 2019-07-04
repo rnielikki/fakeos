@@ -1,16 +1,10 @@
-import { WindowObject, DialogObject, WindowController } from "__lib__/index";
+import { WindowObject, DialogObject, WindowController, Menu } from "__lib__/index";
+import { GetMenu, FromAbsolutePath } from "__lib__/modules/hierachy"
 
-export default [
+const startMenu:Menu[]= [
     {
-        name: "Windows",
-        menu: [
-            {
-                name: "Open new",
-                action: function (e: Event) {
-                    new WindowObject("helloworld");
-                }
-            }
-        ]
+        name: "Programs",
+        menu: GetMenu(FromAbsolutePath("C:\\Program Filez\\")!.path)
     },
     {
         name: "Logout",
@@ -20,3 +14,4 @@ export default [
         name: "Turn Off",
     }
 ]
+export default startMenu;

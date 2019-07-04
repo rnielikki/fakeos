@@ -1,7 +1,7 @@
 import { FileTree, Drive, __system, __userdir } from "__lib__/modules/hierachy";
 import { ExplorerController } from "./icon.system";
 import { DialogObject, WIN, IconObject, WindowObject } from "__lib__/index";
-export default function(target:WindowObject){
+export default function(target:WindowObject, dirPath:FileTree=Drive, dirName?:string){
     const thisBody=target.contentPage.shadowRoot!.querySelector(".explorer-wrap");
     const thisMenu=thisBody!.querySelector(".explorer-head");
     if(!thisMenu) return;
@@ -9,19 +9,22 @@ export default function(target:WindowObject){
     const attachTarget:HTMLElement=thisBody!.querySelector(".explorer-body") as HTMLElement;
     if(attachTarget===null) return;
     const controller:ExplorerController = new ExplorerController(attachTarget);
-    var dirPath:FileTree=Drive;
-    (function(){
-        thisMenuUp.addEventListener("click",()=>Render(dirPath.parent,thisStatus.innerText.replace(/[^\\]*\\$/,"")));
-        thisMenu.querySelector(".explorer-menu-root")!.addEventListener("click",()=>Render(Drive,""));
-        thisMenu.querySelector(".explorer-menu-userdir")!.addEventListener("click",()=>Render(__userdir!.path,__userdir!.label));
-    })();
-    Render(dirPath);
+    if(!dirName){    
+        (function(){
+            thisMenuUp.addEventListener("click",()=>Render(dirPath.parent,thisStatus.innerText.replace(/[^\\]*\\$/,"")));
+            thisMenu.querySelector(".explorer-menu-root")!.addEventListener("click",()=>Render(Drive,""));
+            thisMenu.querySelector(".explorer-menu-userdir")!.addEventListener("click",()=>Render(__userdir!.path, __userdir!.label));
+        })();
+    }
+    Render(dirPath, dirName || "");
     //Change IconObject to set the target.
     function Render(currentPath:FileTree|null, resetStatus:string|null=null){
         if(currentPath===null) return;
         dirPath=currentPath;
-        const children=currentPath.children;
-        if(children===null) return;
+        if(currentPath.children===null) return;
+        //remove hidden file
+        const children=currentPath.children.filter((ftree:FileTree)=>ftree.name[0]!=="_");
+        if(!children) return;
         const len=children.length;
         if(resetStatus!==null){
             thisStatus.innerText=resetStatus;
@@ -49,10 +52,9 @@ export default function(target:WindowObject){
                 else{
                     const fileName=child.fileInfo.realName;
                     const lastIndex=fileName.lastIndexOf(".");
-                    const getMime=GetMime(fileName.substring(lastIndex+1));
                     realName=fileName.substring(0,lastIndex);
-                    const program=getMime[0] || ((currentPath==__system!.path)?"system/":"")+realName;
-                    action=()=>{ let w=new WindowObject(program); (getMime[1] && child.fileInfo!.data)?w.OpenFile(getMime[1](child.fileInfo!.data)):0; };
+                    const program=GetMime(fileName.substring(lastIndex+1)) || ((currentPath==__system!.path)?"system/":"")+realName;
+                    action=()=>{ let w=new WindowObject(program); (child.fileInfo!.data)?w.OpenFile(child.fileInfo!.data):0; };
                     iconName=(currentPath==__system!.path)?"fakeos":program;
                 }
                 const icon=new IconObject(realName, action, child.name, iconName, controller);
@@ -63,15 +65,15 @@ export default function(target:WindowObject){
             }
         }
     }
-    function GetMime(extension:string):[string | null, ((src:string)=>string|HTMLElement) | null]{
+    function GetMime(extension:string):string | null {
         switch(extension){
             case "jpg":
             case "png":
-                return ["default/imgview",(src)=>{ let img=document.createElement("img"); img.src=src; return img; }];
+                return "default/imgview";
             case "txt":
-                return ["default/notepad", (src)=>src.replace(/\n/g,"&#13;&#10;")];
+                return "default/notepad";
             default:
-                return [null, null];
+                return null;
         }
     }
 }

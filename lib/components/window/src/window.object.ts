@@ -13,6 +13,7 @@ export type WindowData = {
     title: string;
     resizable: boolean;
     menu?: Menu[];
+    fileOpen?: ((data:string, page:ShadowRoot)=>void) | null;
 }
 
 export class WindowObject extends WinObject {
@@ -23,6 +24,7 @@ export class WindowObject extends WinObject {
     private _favicon!: HTMLImageElement;
     protected resizers: Array<Resizer> = new Array(8);
     protected _maximized: boolean = false;
+    private _openAction: ((data:string, page:ShadowRoot)=>void) | null = null;
     constructor(winName: string) {
         super(winName, WindowType.Window, WindowController.Get().view);
         this._contentPage = this.target.getElementsByClassName("window-content")[0] as HTMLElement;
@@ -48,6 +50,9 @@ export class WindowObject extends WinObject {
                 const max=this.windowBar.getElementsByClassName("title-maximize")
                 if(max!==null)
                     max[0].remove();
+            }
+            if(winDir.fileOpen){
+                this._openAction=winDir.fileOpen;
             }
             this.SetTitle(winDir.title || "Noname");
             this.SetContent("index");
@@ -144,16 +149,9 @@ export class WindowObject extends WinObject {
             shadow.appendChild(errMsg);
         }
     }
-    public OpenFile=(data:string | HTMLElement)=>{
-        const content=this.contentPage.shadowRoot!.querySelector(".window-content-fill") as HTMLElement;
-        if(content===null) return;
-        else if(typeof data==="string"){
-            content.innerHTML=data; //for line break..... :/
-        }
-        else{
-            content.textContent="";
-            content.appendChild(data);
-        }
+    public OpenFile = (data:string)=>{
+        if(this._openAction)
+            this._openAction(data, this.contentPage.shadowRoot!);
     }
 
     public Maximize = () => {

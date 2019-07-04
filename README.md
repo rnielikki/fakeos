@@ -65,11 +65,11 @@ FakeOS is component-based program. As a developer, you can add any component or 
     * *program_name*.system.ts (only in "system" folder, not mandatory)
  
 ### libraries:
-* new window for new WindowObject()
-  * SetContent
-* new dialog for new DialogObject()
-* new icon for new IconObject()
-* new Right-click menu for new RightMenu()
+* new window for _new WindowObject(winName:string)_
+ * This calls from "program info" file from src/window. (See above!)
+* new dialog for _new DialogObject(winName: string, message: string, buttons: [string, () => void][], parent: WindowObject | null = WindowObject.Now())_
+* new icon for _new IconObject(iconName: string, Action?: (() => void) | null, iconLabel?: string, iconPicName?: string, controller=IconController.Get())_
+* new Right-click menu for _new RightMenu(target: HTMLElement, menu: any[], direction: MenuDirection = MenuDirection.down)_
 * closing window for WIN.Close()
   * use WIN.CloseAll() instead for closing the dialog and its parent
 
@@ -88,7 +88,8 @@ FakeOS is component-based program. As a developer, you can add any component or 
 
 # For developers
 ## Guide
-* Remember to call every library classes and stylesheets to lib/index.ts and lib/index.scss after adding. And removing too.
+* Remember to call every stylesheets to lib/index.scss after adding. And removing too.
+ * You can call to lib/index.ts if you want. This can make code clean, if you call it often and the path is complicated.
 What’s Component and what’s module
 * Class and most method names are PascalCase. Fields and properties are either PascalCase or camelCase.
 * Components are directly used by library user and contains main HTML or CSS Element template.
@@ -97,20 +98,21 @@ What’s Component and what’s module
 * If not sure (rightclick.ts), if it doesn’t contain HTML/CSS element, go to module.
 ## Component Rules
 * Main instantiable name and its skeleton ends with ”Object”
-* Instantiable objects’ controller name is “NameController” and they’re singleton.
+* Instantiable objects’ controller name is “NameController” and they’re singleton. (Exception: IconController is "protected" for Explorer)
 * right click menu is menu_name.ts in src directory.
 * If the component is a library (can called by library user), add to lib/index.js
 * Component structures are:
-  * component.html (not always )
-  * component.css
+  * (component).html (not always )
+  * (component).css
   * src
-    *	component.ts
+    *	(component).ts
     * (can add more ts files here)
 
 ## TODO
 * Please make more programs!
-* User-defined CSS and TS in window dir.
 * Icon multiselect
+* Recycle bin
+* Sound feature
 * If you found some bugs, please report/fix it!
 * Make documentation web page <3
 

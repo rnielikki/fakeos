@@ -1,3 +1,5 @@
+import { Menu } from "./menu";
+import { WindowObject } from "__lib__/index";
 //file hierachy module.
 export type FileTree={
     parent:FileTree|null;
@@ -30,7 +32,7 @@ export const Drive=ParseTree({
     },
     "D:":{}
 }, "file:\\");
-export const [__system, __userdir]=[FromAbsolutePath(["C:","System42"]), FromAbsolutePath(["C:","Users","localhost"])];
+export const [__system, __userdir]=[FromAbsolutePath("C:\\System42\\"), FromAbsolutePath("C:\\Users\\localhost\\")];
 function ParseTree(inputs:string|object|null, dirname:string, parent:FileTree|null=null):FileTree{
     let TreeRoot:FileTree;
     TreeRoot={
@@ -119,19 +121,60 @@ function GetFiles(context:__WebpackModuleApi.RequireContext,extension:string, ex
     return value;
 }
 type Dir={path:FileTree; label:string;};
-function FromAbsolutePath(pathList:string[]):Dir|null{
+export function FromAbsolutePath(pathList:string):Dir|null{
     let current:Dir={
-        path:Drive,
-        label:pathList.join("\\")+"\\"
+        path: Drive,
+        label:pathList
     };
-    const pathLen=pathList.length;
+    const splitPath=pathList.split("\\");
+    let pathLen=splitPath.length;
+    if(splitPath[pathLen-1]===""){
+        splitPath.pop();
+        pathLen--;
+    }
+    else{
+        current.label+="\\";
+    }
     for(let i=0;i<pathLen;i++){
         let c:Array<FileTree|string>|null=current.path!.children
         if(c===null) return null;
         current.path=c.filter(obj=>{
-            return (obj as FileTree!==null && typeof obj!=="string")?obj.name==pathList[i]:false;
+            return (obj as FileTree!==null && typeof obj!=="string")?obj.name==splitPath[i]:false;
         })[0] as FileTree;
-        if(current===null) return null;
+        if(!current.path) return null;
     }
     return current;
+}
+export function GetMenu(path:FileTree):Menu[]{
+    if(!path.children) return [{
+        name:"(Empty)"
+    }];
+    return path.children.reduce((acc:Menu[], tree:FileTree)=>{
+        const fName=tree.name.replace(/\.[^.]+$/,"") || tree.name;
+        let menu:Menu={
+            name: fName,
+            action: undefined,
+            menu: undefined
+        }
+        if(tree.fileInfo){
+            const fRealName=tree.fileInfo.realName.replace(/\.[^.]+$/,"") || tree.fileInfo.realName;
+            if(!tree.fileInfo.data){
+                menu.action=()=>{
+                    new WindowObject(fRealName);
+                }
+            }
+            else{
+                let data=tree.fileInfo.data || ""; // silly error with TS.
+                menu.action=()=>{
+                    let newWin:WindowObject=new WindowObject(fRealName);
+                    newWin.OpenFile(data);
+                }
+            }
+        }
+        else{
+            menu.menu=GetMenu(tree);
+        }
+        acc.push(menu);
+        return acc;
+    },[]);
 }

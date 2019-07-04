@@ -5,6 +5,7 @@ import { StatusBarObject } from 'components/statusbar/src/statusbar';
 import { IconObject } from 'components/icon/src/icon';
 import { DesktopObject } from 'components/desktop/src/desktop';
 import { RightMenu } from 'modules/rightclick';
+import { Menu } from 'modules/menu';
 import * as Init from 'modules/init/entry.init';
 export {
   WindowObject,
@@ -15,7 +16,8 @@ export {
   IconObject,
   RightMenu,
   DesktopObject,
-  WindowData
+  WindowData,
+  Menu
 };
 Init.default();
 /* css
