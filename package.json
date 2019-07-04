@@ -1,6 +1,6 @@
 {
   "name": "fakeos",
-  "version": "0.0.1",
+  "version": "0.8.0",
   "description": "",
   "main": "server.js",
   "dependencies": {
@@ -26,5 +26,5 @@
     "build": "webpack --mode production"
   },
   "author": "",
-  "license": "ISC"
+  "license": "MIT"
 }
