@@ -1,7 +1,9 @@
 (function () {
     const thisBody = document.currentScript.parentElement.shadowRoot;
     const canvas = thisBody.getElementById("paint-canvas");
-    let host = thisBody.host;
+    const canvasParent = canvas.parentElement;
+    const host=thisBody.host;
+
     let win = host.parentElement;
     canvas.width = "1200";
     canvas.height = "600";
@@ -12,14 +14,14 @@
     ctx.lineWidth = 20;
     let styleBuffer = { left: 0, top: 0 };
     const draw = function (e) {
-        ctx.lineTo(e.clientX - styleBuffer.left + host.scrollLeft, e.clientY - styleBuffer.top - topOffset + host.scrollTop);
+        ctx.lineTo(e.clientX - styleBuffer.left + canvasParent.scrollLeft, e.clientY - styleBuffer.top - topOffset + canvasParent.scrollTop);
         ctx.stroke();
     }
     const setDraw = function (e) {
         styleBuffer.left = parseInt(win.style.left);
         styleBuffer.top = parseInt(win.style.top);
         ctx.beginPath();
-        ctx.moveTo(e.clientX - styleBuffer.left + host.scrollLeft, e.clientY - styleBuffer.top - topOffset + host.scrollTop);
+        ctx.moveTo(e.clientX - styleBuffer.left + canvasParent.scrollLeft, e.clientY - styleBuffer.top - topOffset + canvasParent.scrollTop);
         canvas.addEventListener("mousemove", draw);
     }
     const stopDraw = function (e) {

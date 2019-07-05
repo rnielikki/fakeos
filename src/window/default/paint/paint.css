@@ -1,8 +1,8 @@
 .paint-wrap{
     width:100%;
     height:100%;
-    display:flex;
-    flex-direction:column;
+    position: relative;
+    overflow:hidden;
 }
 .paint-style{
     display:grid;
@@ -29,7 +29,9 @@
     margin-right:5px;
 }
 .paint-content{
-    height:100%;
+    position:absolute;
+    left:0;top:100px;bottom:0;right:0;
+    overflow:scroll;
     background-color:#aaa;
 }
 canvas{
