@@ -1,3 +1,5 @@
+# NOTE: THIS PROJECT WILL BE GO THROUGH REFACTORING.
+-- Please wait. Pull requests may not be accepted until refactoring is done. --
 
 ## What is this?
 
