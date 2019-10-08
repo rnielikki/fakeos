@@ -3,69 +3,6 @@ export type Menu={
     name:string;
     action?:()=>void;
     menu?:Menu[];
-    vmenu?:Menu[];
-}
-export function build(source: Menu[]): DocumentFragment {
-    let frag = document.createDocumentFragment();
-    buildRecursion(source, frag);
-    return frag;
-}
-function buildRecursion(src: Menu[], parent: HTMLElement | DocumentFragment): void {
-    if (!src) return;
-    const it = src[Symbol.iterator]();
-    let current;
-    while (!current || !current.done) {
-        current = it.next();
-        if (!current.value || !current.value.name) continue;
-        let elem = document.createElement("div");
-        if (current.value.action) {
-            elem.innerText = current.value.name;
-            elem.classList.add("menu-selectable");
-            elem.onclick = current.value.action;
-        }
-        else if (!current.value.menu && !current.value.vmenu) {
-            elem.innerText = current.value.name;
-            elem.classList.add("menu-disabled");
-        }
-        else {
-            elem.classList.add("menu-wrapper");
-        }
-        if (current.value.menu || current.value.vmenu) {
-            let elem2 = document.createElement("div");
-            let label = document.createElement("div");
-            label.classList.add("menu-selectable");
-            label.innerText = current.value.name;
-            elem.appendChild(label);
-            elem2.classList.add("menu-secondary");
-            if (current.value.vmenu) {
-                elem2.classList.add("menu-secondary-vertical");
-                buildRecursion(current.value.vmenu, elem2);
-            }
-            else {
-                buildRecursion(current.value.menu!, elem2);
-            }
-            elem.appendChild(elem2);
-        }
-        parent.appendChild(elem);
-    }
-}
-export function WindowMenu(Menu: { name: string, action?: () => void, menu?: Menu[] }[]): DocumentFragment {
-    const len = Menu.length;
-    const frag = document.createDocumentFragment();
-    for (let i = 0; i < len; i++) {
-        const wrap = document.createElement("div");
-        const title = document.createElement("div");
-        wrap.classList.add("menu-wrapper-primary");
-        title.classList.add("menu-primary");
-        title.innerText = Menu[i].name;
-        wrap.appendChild(title);
-        if (Menu[i].menu) {
-            document.createElement("div");
-            new ClickMenu(Menu[i].menu!, title).SetClassList(["window-submenu", "menu-secondary"]);
-        }
-        frag.appendChild(wrap);
-    }
-    return frag;
 }
 export class PrimaryMenu {
     public static ActiveMenu: PrimaryMenu | null = null;
@@ -84,7 +21,7 @@ export class PrimaryMenu {
         this.primaryDivClass.push("menu-first");
         div.classList.add(...this.primaryDivClass);
         this.appendTarget.appendChild(div);
-        div.appendChild(build(this.menu));
+        div.appendChild(this.Build(this.menu));
         PrimaryMenu.ActiveMenu = this;
 
         //size must be calculated,
@@ -114,6 +51,44 @@ export class PrimaryMenu {
         if (this.div) this.div.remove();
         PrimaryMenu.ActiveMenu = null;
         this._div = null;
+    }
+    private Build(source: Menu[]): DocumentFragment {
+        let frag = document.createDocumentFragment();
+        this.BuildRecursion(source, frag);
+        return frag;
+    }
+    private BuildRecursion(src: Menu[], parent: HTMLElement | DocumentFragment): void {
+        if (!src) return;
+        const it = src[Symbol.iterator]();
+        let current;
+        while (!current || !current.done) {
+            current = it.next();
+            if (!current.value || !current.value.name) continue;
+            let elem = document.createElement("div");
+            if (current.value.action) {
+                elem.innerText = current.value.name;
+                elem.classList.add("menu-selectable");
+                elem.onclick = current.value.action;
+            }
+            else if (!current.value.menu) {
+                elem.innerText = current.value.name;
+                elem.classList.add("menu-disabled");
+            }
+            else {
+                elem.classList.add("menu-wrapper");
+            }
+            if (current.value.menu) {
+                let elem2 = document.createElement("div");
+                let label = document.createElement("div");
+                label.classList.add("menu-selectable");
+                label.innerText = current.value.name;
+                elem.appendChild(label);
+                elem2.classList.add("menu-secondary");
+                this.BuildRecursion(current.value.menu!, elem2);
+                elem.appendChild(elem2);
+            }
+            parent.appendChild(elem);
+        }
     }
     public get div() { return this._div; }
 }

@@ -43,6 +43,12 @@ const app:WindowData= {
                     ]
                 },
                 {
+                    name: "LoadTest",
+                    action: ()=>{
+                        require("../default/calculator/index.html");
+                    }
+                },
+                {
                     name: "Exit",
                     action: () => {
                         new DialogObject("See ya!", "Bye!", [["OK", WIN.CloseAll]])

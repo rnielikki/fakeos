@@ -1,4 +1,6 @@
-# NOTE: THIS PROJECT WILL GO THROUGH REFACTORING.
+# NOTE: REFACTORING IS DELAYED BECAUSE OF MY ASSIGNMENTS.
+I drew a new diagram for it, but it didn't start yet.
+Sorry for inconvenience!
 -- Please wait. Pull requests may not be accepted until refactoring is done. --
 
 ## What is this?
@@ -71,7 +73,7 @@ FakeOS is component-based program. As a developer, you can add any component or 
  * This calls from "program info" file from src/window. (See above!)
 * new dialog for _new DialogObject(winName: string, message: string, buttons: [string, () => void][], parent: WindowObject | null = WindowObject.Now())_
 * new icon for _new IconObject(iconName: string, Action?: (() => void) | null, iconLabel?: string, iconPicName?: string, controller=IconController.Get())_
-* new Right-click menu for _new RightMenu(target: HTMLElement, menu: any[], direction: MenuDirection = MenuDirection.down)_
+* new Right-click menu for _new RightMenu(target: HTMLElement, menu: Menu, direction: MenuDirection = MenuDirection.down)_
 * closing window for WIN.Close()
   * use WIN.CloseAll() instead for closing the dialog and its parent
 
@@ -81,7 +83,6 @@ FakeOS is component-based program. As a developer, you can add any component or 
        name: “string”, //menu text to be shown
        action: ()=>void(), //don’t use only function name(like WIN.Close).
        menu: [ … ] //submenu, which contains “menu structure”
-              //note: currently we support vmenu(vertical menu), but I don’t know if it’s useful.
    }
    ```
 * menu is "Menu" type array. (Menu[])

@@ -21,9 +21,9 @@ export const Drive=ParseTree({
             "Admin":{},
             "localhost":{
                 "Documents":{
-                        'readme.txt':require('!!text-loader!__root__/readme.md'),
-                        'about_backgrounds.txt':require('__src__/resource/backgrounds/LICENSE.txt'),
-                        'license.txt':require('!!text-loader!__root__/LICENSE')
+                        'readme.txt':require('!!file-loader!__root__/readme.md'),
+                        'about_backgrounds.txt':require('!!file-loader!__src__/resource/backgrounds/LICENSE.txt'),
+                        'license.txt':require('!!file-loader!__root__/LICENSE')
                     },
                 "Videos":{},
                 "Images":GetFiles(require.context('__src__/resource/backgrounds',false,/.*(\.jpg)$/),"jpg")

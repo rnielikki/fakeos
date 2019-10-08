@@ -6,7 +6,7 @@ import { Resizer, direction } from "./resizer";
 import { Position } from "modules/position"
 import * as barmenu from "./menu_windowbar";
 
-import { WindowMenu, Menu } from "modules/menu";
+import { ClickMenu, Menu } from "modules/menu";
 import { RightMenu } from "modules/rightclick";
 
 export type WindowData = {
@@ -38,7 +38,7 @@ export class WindowObject extends WinObject {
                 throw("WindowData requires title and resizable keys. Check your (programname).ts file.");
             }
             if (winDir.menu && menubar !== null) {
-                menubar.appendChild(WindowMenu(winDir.menu));
+                menubar.appendChild(this.WindowMenu(winDir.menu));
             }
             if(winDir.resizable===true){
                 this.target.prepend(this.WinCon.resizerView.cloneNode(true));
@@ -178,7 +178,24 @@ export class WindowObject extends WinObject {
         }
         this._resizable = !this.resizable;
     }
-
+    private WindowMenu(Menu: Menu[]): DocumentFragment {
+        const len = Menu.length;
+        const frag = document.createDocumentFragment();
+        for (let i = 0; i < len; i++) {
+            const wrap = document.createElement("div");
+            const title = document.createElement("div");
+            wrap.classList.add("menu-wrapper-primary");
+            title.classList.add("menu-primary");
+            title.innerText = Menu[i].name;
+            wrap.appendChild(title);
+            if (Menu[i].menu) {
+                document.createElement("div");
+                new ClickMenu(Menu[i].menu!, title).SetClassList(["window-submenu", "menu-secondary"]);
+            }
+            frag.appendChild(wrap);
+        }
+        return frag;
+    }
     /* Note: recommend to use ONLY in window template scripts */
     public static Now(): WindowObject { return WindowController.Get().ActiveWindow as WindowObject; }
     public get maximized(): boolean { return this._maximized; }

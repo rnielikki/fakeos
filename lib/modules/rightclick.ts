@@ -1,9 +1,9 @@
-import { PrimaryMenu, MenuDirection } from "modules/menu";
+import { PrimaryMenu, MenuDirection, Menu } from "modules/menu";
 
 export class RightMenu extends PrimaryMenu {
     private _target: HTMLElement;
     private _direction: MenuDirection;
-    constructor(target: HTMLElement, menu: any[], direction: MenuDirection = MenuDirection.down) {
+    constructor(target: HTMLElement, menu: Menu[], direction: MenuDirection = MenuDirection.down) {
         super(menu);
         this._target = target;
         this._direction = direction;

@@ -19,7 +19,7 @@ export class IconController {
             name:"change name",
             action:()=>{
                 const sel=IconController.lastselect;
-                //if(sel) sel.setName("hello, world!");
+                //if(sel) sel.SetName("hello, world!");
                 if(sel) sel.EditMode();
             }
         },
@@ -84,8 +84,8 @@ export class IconObject extends Copyable {
         this.controller=controller;
         this.target.addEventListener("mousedown", this.Register, false);
         this.labelObject = this.target.getElementsByClassName("icon-label")[0] as HTMLElement;
-        this.setName(iconLabel || iconName);
-        iconPicName ? this.setIcon(iconPicName, true) : this.setIcon(iconName);
+        this.SetName(iconLabel || iconName);
+        iconPicName ? this.SetIcon(iconPicName, true) : this.SetIcon(iconName);
         Action = !Action ? () => new WindowObject(iconName) : Action;
         this.target.addEventListener("dblclick", Action);
         this.target.addEventListener("mousedown", this.Select);
@@ -95,7 +95,7 @@ export class IconObject extends Copyable {
         new RightMenu(this.target,this.controller.iconMenu);
         controller.iconCount++;
     }
-    setIcon(iconName: string, custom: boolean = false) {
+    SetIcon(iconName: string, custom: boolean = false) {
         let favicon;
         try {
             if (custom) {
@@ -140,11 +140,11 @@ export class IconObject extends Copyable {
         this.labelObject.focus();
         const before=this.labelObject.innerText;
         this.labelObject.addEventListener("focusout", ()=>{
-            this.setName(this.labelObject.innerText || before);
+            this.SetName(this.labelObject.innerText || before);
             this.labelObject.contentEditable="false";
         } ,{once:true});
     }
-    public setName(text:string){
+    public SetName(text:string){
         this.labelObject.innerText=text;
     }
     public Remove=()=>{
