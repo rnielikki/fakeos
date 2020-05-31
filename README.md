@@ -1,7 +1,4 @@
-# NOTE: REFACTORING IS DELAYED BECAUSE OF MY ASSIGNMENTS.
-I drew a new diagram for it, but it didn't start yet.
-Sorry for inconvenience!
--- Please wait. Pull requests may not be accepted until refactoring is done. --
+# NOTE: THIS REPO IS OBSOLETE.
 
 ## What is this?
 
